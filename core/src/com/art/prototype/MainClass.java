@@ -30,6 +30,7 @@ public class MainClass extends ApplicationAdapter {
 		world = new World();
 
 		player = new Player();
+		world.setPlayer(player);
 		platform = Platform.MAKE_GROUND_PLATFORM();
 		platform1 = Platform.MAKE_RANDOM();
 
@@ -54,7 +55,7 @@ public class MainClass extends ApplicationAdapter {
 		extendViewport.apply();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		final float deltaTime = Gdx.graphics.getDeltaTime();
-		world.tick(deltaTime);
+		world.doPhysicsStep(deltaTime);
 		player.update(deltaTime);
 
 		shapeRenderer.begin();
