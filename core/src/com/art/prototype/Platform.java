@@ -25,7 +25,7 @@ public class Platform extends StaticBody {
     public static Platform MAKE_RANDOM () {
         Platform platform = new Platform();
         platform.pos.x = MathUtils.random(0, 100);
-        platform.pos.y = MathUtils.random(0, 25);
+        platform.pos.y = 7;
         platform.size.x = MathUtils.random(10, 15);
         platform.size.y = 0.5f;
         return platform;

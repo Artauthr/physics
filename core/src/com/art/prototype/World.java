@@ -45,10 +45,42 @@ public class World {
                 Utils.setupRectangleFor(tmp2, staticBody);
                 if (Intersector.overlaps(tmp1, tmp2)) {
                     dynamicBody.getVelocity().y = 0;
-                    dynamicBody.pos.y = staticBody.pos.y + staticBody.size.y;
+//                    dynamicBody.pos.y = staticBody.pos.y + staticBody.size.y;
+                    resolveStaticCollision(dynamicBody, staticBody);
                 }
             }
         }
+    }
+
+    private void resolveStaticCollision (DynamicBody dynamicBody, StaticBody staticBody) {
+
+        boolean yLower = dynamicBody.pos.y < staticBody.pos.y;
+        boolean xLower = dynamicBody.pos.x < staticBody.pos.x;
+
+        final float xDist = Math.abs(dynamicBody.pos.x - staticBody.pos.x);
+        final float yDist = Math.abs(dynamicBody.pos.y - staticBody.pos.y);
+
+        final float fartherDistance = Math.max(xDist, yDist);
+
+        if (fartherDistance == xDist) {
+            if (xLower) {
+                System.out.println("LEFT SIDE HIT");
+                return;
+            } else {
+                System.out.println("RIGHT SIDE HIT");
+                return;
+            }
+        }
+        if (fartherDistance == yDist) {
+            if (yLower) {
+                System.out.println("BOTTOM SIDE HIT");
+                return;
+            } else {
+                System.out.println("UPPER SIDE HIT");
+                return;
+            }
+        }
+
     }
 
 
