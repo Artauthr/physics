@@ -1,0 +1,186 @@
+
+gameatlas.png
+size: 1024, 256
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+ui-white-pixel
+  rotate: false
+  xy: 349, 118
+  size: 10, 10
+  split: 3, 3, 3, 3
+  pad: 0, 0, 0, 0
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+ui-white-squircle-15
+  rotate: false
+  xy: 971, 140
+  size: 50, 50
+  split: 25, 24, 21, 27
+  pad: 0, 0, 0, 0
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+ui-white-squircle-19
+  rotate: false
+  xy: 79, 4
+  size: 44, 38
+  split: 20, 20, 17, 18
+  pad: 0, 0, 0, 0
+  orig: 44, 38
+  offset: 0, 0
+  index: -1
+ui-white-squircle-20
+  rotate: false
+  xy: 562, 140
+  size: 42, 42
+  split: 20, 19, 20, 20
+  pad: 0, 0, 0, 0
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+ui-white-squircle-25
+  rotate: false
+  xy: 371, 2
+  size: 52, 52
+  split: 25, 25, 25, 25
+  pad: 0, 0, 0, 0
+  orig: 52, 52
+  offset: 0, 0
+  index: -1
+ui-white-squircle-35
+  rotate: false
+  xy: 371, 56
+  size: 72, 72
+  split: 36, 35, 35, 36
+  pad: 0, 0, 0, 0
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+ui-white-squircle-40
+  rotate: false
+  xy: 203, 26
+  size: 82, 82
+  split: 38, 41, 39, 41
+  pad: 0, 0, 0, 0
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+ui-white-squircle-40-top
+  rotate: false
+  xy: 475, 137
+  size: 85, 45
+  split: 40, 41, 40, 1
+  pad: 0, 0, 0, 0
+  orig: 85, 45
+  offset: 0, 0
+  index: -1
+ui-white-squircle-50
+  rotate: false
+  xy: 617, 152
+  size: 102, 102
+  split: 50, 50, 51, 50
+  pad: 0, 0, 0, 0
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+ui-white-squircle-60
+  rotate: false
+  xy: 349, 130
+  size: 124, 124
+  split: 60, 60, 60, 60
+  pad: 0, 0, 0, 0
+  orig: 124, 124
+  offset: 0, 0
+  index: -1
+ui-white-squircle-70
+  rotate: false
+  xy: 203, 110
+  size: 144, 144
+  split: 70, 70, 70, 70
+  pad: 0, 0, 0, 0
+  orig: 144, 144
+  offset: 0, 0
+  index: -1
+ui-white-squircle-90
+  rotate: false
+  xy: 2, 44
+  size: 199, 210
+  split: 99, 99, 104, 104
+  pad: 0, 0, 0, 0
+  orig: 199, 210
+  offset: 0, 0
+  index: -1
+ui-white-squircle-bottom-35
+  rotate: false
+  xy: 2, 2
+  size: 75, 40
+  split: 35, 36, 1, 35
+  pad: 0, 0, 0, 0
+  orig: 75, 40
+  offset: 0, 0
+  index: -1
+ui-white-squircle-bottom-40
+  rotate: false
+  xy: 287, 26
+  size: 82, 82
+  split: 40, 40, 0, 46
+  pad: 0, 0, 0, 0
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+ui-white-squircle-bottom-50
+  rotate: false
+  xy: 721, 152
+  size: 102, 102
+  split: 51, 49, 0, 49
+  pad: 0, 0, 0, 0
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+ui-white-squircle-left
+  rotate: false
+  xy: 825, 112
+  size: 71, 142
+  split: 55, 14, 70, 70
+  pad: 0, 0, 0, 0
+  orig: 71, 142
+  offset: 0, 0
+  index: -1
+ui-white-squircle-right
+  rotate: false
+  xy: 898, 112
+  size: 71, 142
+  split: 14, 55, 70, 70
+  pad: 0, 0, 0, 0
+  orig: 71, 142
+  offset: 0, 0
+  index: -1
+ui-white-squircle-right-20
+  rotate: false
+  xy: 445, 82
+  size: 26, 46
+  split: 1, 21, 21, 21
+  pad: 0, 0, 0, 0
+  orig: 26, 46
+  offset: 0, 0
+  index: -1
+ui-white-squircle-right-25
+  rotate: false
+  xy: 971, 192
+  size: 47, 62
+  split: 5, 40, 30, 30
+  pad: 0, 0, 0, 0
+  orig: 47, 62
+  offset: 0, 0
+  index: -1
+ui-white-squircle-top-50
+  rotate: false
+  xy: 475, 184
+  size: 140, 70
+  split: 65, 67, 51, 0
+  pad: 0, 0, 0, 0
+  orig: 140, 70
+  offset: 0, 0
+  index: -1

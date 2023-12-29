@@ -9,8 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-
-
+        classpath 'com.badlogicgames.gdx:gdx-tools:1.10.0'
     }
 }
 
@@ -48,9 +47,20 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 
     }
+
 }
+
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
+task packGameTextures() {
+    doFirst {
+        TexturePacker.processIfModified("raws", "assets/gameassets", "gameatlas")
+    }
+}
+
 
 project(":core") {
     apply plugin: "java-library"
