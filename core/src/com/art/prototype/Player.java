@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import lombok.Setter;
@@ -15,18 +16,16 @@ public class Player extends DynamicBody {
     @Setter
     private float jumpAmount = 90f;
     private final float HORIZONTAL_SPEED = 35f;
-    private final float MIN_JUMP_SPEED = 76f;
+    private final float MIN_JUMP_SPEED = 40f;
     private Array<Integer> keycodes;
     private Vector2 prevPos = new Vector2();
+
+    private final float MAX_JUMP_VEL = 80f;
 
     private boolean spacePressed = false;
     private boolean spaceBeingPressed;
     private float spacePressDuration = 0f;
 
-
-    public void backTick () {
-        this.pos.y = prevPos.y;
-    }
 
     public Player () {
         pos.set(50, 25);
@@ -55,19 +54,23 @@ public class Player extends DynamicBody {
             velocity.x = 0;
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            jump();
+        }
+
         boolean beingHeld = Gdx.input.isKeyPressed(Input.Keys.SPACE);
         if (beingHeld) {
-            jump();
             spacePressDuration += deltaTime;
-            jumpAmount += 50f;
-            System.out.println("jumpAmount = " + jumpAmount);
+            jump();
+//            jumpAmount += 1f;
+            velocity.y += 1f;
             spacePressed = true;
         }
         if (spacePressed && !beingHeld) {
 //            System.err.println("JUMP INTERRUPTED");
             stopJump();
             spacePressed = false;
-            jumpAmount = MIN_JUMP_SPEED;
+//            jumpAmount = MIN_JUMP_SPEED;
             spacePressDuration = 0;
         }
     }
@@ -84,6 +87,14 @@ public class Player extends DynamicBody {
 
     public void queueInput (int keycode) {
         keycodes.add(keycode);
+    }
+
+    private Vector2 tmp = new Vector2();
+
+    public Vector2 getNextFramePos () {
+        final float deltaTime = Gdx.graphics.getDeltaTime();
+        tmp.set(pos.x + velocity.x * deltaTime, pos.y + velocity.y * deltaTime);
+        return tmp;
     }
 
     private void drainInput () {

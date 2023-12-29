@@ -1,5 +1,6 @@
-package com.art.prototype;
+package com.art.prototype.input;
 
+import com.art.prototype.Player;
 import com.badlogic.gdx.InputProcessor;
 import lombok.Setter;
 

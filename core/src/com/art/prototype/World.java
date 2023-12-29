@@ -1,11 +1,18 @@
 package com.art.prototype;
 
+import com.art.prototype.editor.LevelData;
+import com.art.prototype.editor.PlatformData;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import lombok.Getter;
 import lombok.Setter;
+
+import java.util.logging.Level;
 
 public class World {
     /*
@@ -15,6 +22,8 @@ public class World {
     private Vector2 forces;
     private Array<PhysicsObject> allObjects;
     private Array<DynamicBody> dynamicBodies;
+
+    @Getter
     private Array<StaticBody> staticBodies;
 
     @Setter
@@ -45,7 +54,7 @@ public class World {
     public void doPhysicsStep(float deltaTime) {
         // fixed time step
         // max frame time to avoid spiral of death (on slow devices)
-        float frameTime = Math.min(deltaTime, 0.25f);
+        float frameTime = Math.min(deltaTime, 0.15f);
         accumulator += frameTime;
         while (accumulator >= TIME_STEP) {
             collisionCheckSingle();
@@ -66,7 +75,7 @@ public class World {
                 Utils.setupRectangleFor(tmp1, dynamicBody);
                 Utils.setupRectangleFor(tmp2, staticBody);
                 if (Intersector.overlaps(tmp1, tmp2)) {
-                    dynamicBody.getVelocity().y = 0;
+                    dynamicBody.velocity.setZero();
                     dynamicBody.pos.y = staticBody.pos.y + staticBody.size.y;
 
                 }
@@ -77,15 +86,27 @@ public class World {
     private void collisionCheckSingle () {
         applyForcePlayer(player);
         for (StaticBody staticBody : staticBodies) {
-            Utils.setupRectangleFor(tmp2, player);
+            Utils.setupPlayerDelayedRectangle(tmp2, player, player.getNextFramePos());
             Utils.setupRectangleFor(tmp1, staticBody);
             if (Intersector.overlaps(tmp1, tmp2)) {
                 player.getVelocity().y = 0;
-                player.pos.y = staticBody.pos.y + staticBody.size.y;
-                player.setJumpAmount(76f); //hardcoded get from player class
+                player.getVelocity().x = 0;
+//                player.pos.y = staticBody.pos.y + staticBody.size.y;
+//                player.setJumpAmount(76f); //hardcoded get from player class
             }
         }
     }
+
+    public void loadFromLevelData (LevelData levelData) {
+        this.staticBodies.clear();
+        final Array<PlatformData> data = levelData.getPlatformDataArray();
+        for (PlatformData datum : data) {
+            final Platform platform = Platform.fromPlatformData(datum);
+            this.staticBodies.add(platform);
+        }
+    }
+
+
     private void resolveStaticCollision (DynamicBody dynamicBody, StaticBody staticBody) {
 
         boolean yLower = dynamicBody.pos.y < staticBody.pos.y;
@@ -113,6 +134,22 @@ public class World {
             }
         }
 
+    }
+
+    public Platform spawnPlatformAt (float x, float y) {
+        Platform platform = new Platform();
+        platform.setPos(x, y);
+        platform.setSize(10, 1);
+        staticBodies.add(platform);
+        return platform;
+    }
+
+    public void draw (ShapeRenderer shapeRenderer) {
+        player.draw(shapeRenderer);
+        shapeRenderer.setColor(Color.GREEN);
+        for (StaticBody staticBody : staticBodies) {
+            shapeRenderer.rect(staticBody.pos.x, staticBody.pos.y, staticBody.getSize().x, staticBody.getSize().y);
+        }
     }
 
 

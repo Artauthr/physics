@@ -1,5 +1,6 @@
 package com.art.prototype;
 
+import com.art.prototype.editor.PlatformData;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -28,6 +29,13 @@ public class Platform extends StaticBody {
         platform.pos.y = 7;
         platform.size.x = MathUtils.random(10, 15);
         platform.size.y = 0.5f;
+        return platform;
+    }
+
+    public static Platform fromPlatformData (PlatformData data) {
+        Platform platform = new Platform();
+        platform.setPos(data.getPos());
+        platform.setSize(data.getSize());
         return platform;
     }
 }
