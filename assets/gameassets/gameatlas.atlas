@@ -4,7 +4,7 @@ size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-ui-white-pixel
+ui/ui-white-pixel
   rotate: false
   xy: 349, 118
   size: 10, 10
@@ -13,7 +13,7 @@ ui-white-pixel
   orig: 10, 10
   offset: 0, 0
   index: -1
-ui-white-squircle-15
+ui/ui-white-squircle-15
   rotate: false
   xy: 971, 140
   size: 50, 50
@@ -22,7 +22,7 @@ ui-white-squircle-15
   orig: 50, 50
   offset: 0, 0
   index: -1
-ui-white-squircle-19
+ui/ui-white-squircle-19
   rotate: false
   xy: 79, 4
   size: 44, 38
@@ -31,7 +31,7 @@ ui-white-squircle-19
   orig: 44, 38
   offset: 0, 0
   index: -1
-ui-white-squircle-20
+ui/ui-white-squircle-20
   rotate: false
   xy: 562, 140
   size: 42, 42
@@ -40,7 +40,7 @@ ui-white-squircle-20
   orig: 42, 42
   offset: 0, 0
   index: -1
-ui-white-squircle-25
+ui/ui-white-squircle-25
   rotate: false
   xy: 371, 2
   size: 52, 52
@@ -49,7 +49,7 @@ ui-white-squircle-25
   orig: 52, 52
   offset: 0, 0
   index: -1
-ui-white-squircle-35
+ui/ui-white-squircle-35
   rotate: false
   xy: 371, 56
   size: 72, 72
@@ -58,7 +58,7 @@ ui-white-squircle-35
   orig: 72, 72
   offset: 0, 0
   index: -1
-ui-white-squircle-40
+ui/ui-white-squircle-40
   rotate: false
   xy: 203, 26
   size: 82, 82
@@ -67,7 +67,7 @@ ui-white-squircle-40
   orig: 82, 82
   offset: 0, 0
   index: -1
-ui-white-squircle-40-top
+ui/ui-white-squircle-40-top
   rotate: false
   xy: 475, 137
   size: 85, 45
@@ -76,7 +76,7 @@ ui-white-squircle-40-top
   orig: 85, 45
   offset: 0, 0
   index: -1
-ui-white-squircle-50
+ui/ui-white-squircle-50
   rotate: false
   xy: 617, 152
   size: 102, 102
@@ -85,7 +85,7 @@ ui-white-squircle-50
   orig: 102, 102
   offset: 0, 0
   index: -1
-ui-white-squircle-60
+ui/ui-white-squircle-60
   rotate: false
   xy: 349, 130
   size: 124, 124
@@ -94,7 +94,7 @@ ui-white-squircle-60
   orig: 124, 124
   offset: 0, 0
   index: -1
-ui-white-squircle-70
+ui/ui-white-squircle-70
   rotate: false
   xy: 203, 110
   size: 144, 144
@@ -103,7 +103,7 @@ ui-white-squircle-70
   orig: 144, 144
   offset: 0, 0
   index: -1
-ui-white-squircle-90
+ui/ui-white-squircle-90
   rotate: false
   xy: 2, 44
   size: 199, 210
@@ -112,7 +112,7 @@ ui-white-squircle-90
   orig: 199, 210
   offset: 0, 0
   index: -1
-ui-white-squircle-bottom-35
+ui/ui-white-squircle-bottom-35
   rotate: false
   xy: 2, 2
   size: 75, 40
@@ -121,7 +121,7 @@ ui-white-squircle-bottom-35
   orig: 75, 40
   offset: 0, 0
   index: -1
-ui-white-squircle-bottom-40
+ui/ui-white-squircle-bottom-40
   rotate: false
   xy: 287, 26
   size: 82, 82
@@ -130,7 +130,7 @@ ui-white-squircle-bottom-40
   orig: 82, 82
   offset: 0, 0
   index: -1
-ui-white-squircle-bottom-50
+ui/ui-white-squircle-bottom-50
   rotate: false
   xy: 721, 152
   size: 102, 102
@@ -139,7 +139,7 @@ ui-white-squircle-bottom-50
   orig: 102, 102
   offset: 0, 0
   index: -1
-ui-white-squircle-left
+ui/ui-white-squircle-left
   rotate: false
   xy: 825, 112
   size: 71, 142
@@ -148,7 +148,7 @@ ui-white-squircle-left
   orig: 71, 142
   offset: 0, 0
   index: -1
-ui-white-squircle-right
+ui/ui-white-squircle-right
   rotate: false
   xy: 898, 112
   size: 71, 142
@@ -157,7 +157,7 @@ ui-white-squircle-right
   orig: 71, 142
   offset: 0, 0
   index: -1
-ui-white-squircle-right-20
+ui/ui-white-squircle-right-20
   rotate: false
   xy: 445, 82
   size: 26, 46
@@ -166,7 +166,7 @@ ui-white-squircle-right-20
   orig: 26, 46
   offset: 0, 0
   index: -1
-ui-white-squircle-right-25
+ui/ui-white-squircle-right-25
   rotate: false
   xy: 971, 192
   size: 47, 62
@@ -175,7 +175,7 @@ ui-white-squircle-right-25
   orig: 47, 62
   offset: 0, 0
   index: -1
-ui-white-squircle-top-50
+ui/ui-white-squircle-top-50
   rotate: false
   xy: 475, 184
   size: 140, 70

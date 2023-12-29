@@ -3,13 +3,14 @@ package com.art.prototype;
 import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
 import com.art.prototype.editor.LevelData;
-import com.art.prototype.input.MovementProcessor;
 import com.art.prototype.input.WorldInteraction;
+import com.art.prototype.resources.ResourceManager;
 import com.art.prototype.ui.GameUI;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -38,6 +39,12 @@ public class MainClass extends ApplicationAdapter {
 
 		final API instance = API.getInstance();
 
+		ResourceManager resourceManager = API.get(ResourceManager.class);
+		resourceManager.startLoading();
+		while (!resourceManager.updateLoading()) {
+			resourceManager.updateLoading();
+		}
+
 		//viewport
 		extendViewport = new ExtendViewport(100, 50);
 		camera = extendViewport.getCamera();
@@ -47,6 +54,7 @@ public class MainClass extends ApplicationAdapter {
 
 		///ui
 		ScreenViewport uiViewport = new ScreenViewport();
+		uiViewport.setUnitsPerPixel(2f);
 		gameUI = new GameUI(uiViewport, spriteBatch);
 		API.register(gameUI);
 
@@ -54,18 +62,20 @@ public class MainClass extends ApplicationAdapter {
 		world.setPlayer(player);
 		ground = Platform.MAKE_GROUND_PLATFORM();
 
-		MovementProcessor movementProcessor = new MovementProcessor();
 		WorldInteraction worldInteraction = new WorldInteraction();
 		worldInteraction.setWorldRef(world);
 		worldInteraction.setExtendViewport(extendViewport);
 
 		InputMultiplexer multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor(movementProcessor);
 		multiplexer.addProcessor(worldInteraction);
+		multiplexer.addProcessor(gameUI.getStage());
 
- 		movementProcessor.setPlayer(player);
 		Gdx.input.setInputProcessor(multiplexer);
 
+
+
+
+		System.out.println("LOAD FINISHED");
 
 
 		world.addDynamicBody(player);
@@ -91,7 +101,23 @@ public class MainClass extends ApplicationAdapter {
 			API.get(Editor.class).saveToFile();
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-			final LevelData levelData = API.get(Editor.class).loadLevelData("levelData.json");
+			String directoryPath = "savedLevels";
+
+			// Get the directory as a FileHandle
+			FileHandle dirHandle = Gdx.files.internal(directoryPath);
+
+			// List all files in the directory
+			FileHandle[] files = dirHandle.list();
+
+			// Iterate through the files and print their names
+			String name = "";
+			if (files.length > 0) {
+				name = files[0].file().getName();
+			}
+
+			String finalName = directoryPath + "/" + name;
+
+			final LevelData levelData = API.get(Editor.class).loadLevelData(finalName);
 			API.get(World.class).loadFromLevelData(levelData);
 		}
 		shapeRenderer.end();

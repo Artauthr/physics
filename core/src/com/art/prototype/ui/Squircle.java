@@ -1,5 +1,7 @@
 package com.art.prototype.ui;
 
+import com.art.prototype.api.API;
+import com.art.prototype.resources.ResourceManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -36,22 +38,22 @@ public enum Squircle {
     }
 
     public Drawable getDrawable(Color color) {
-        return API.get(Resources.class).obtainDrawable("ui/" + name + "-" + radius, color);
+        return API.get(ResourceManager.class).obtainDrawable("ui/" + name + "-" + radius, color);
     }
 
     public static Drawable getSquircle (int radius, Color color) {
-        return Resources.getDrawable("ui/ui-white-squircle-" + radius, color);
+        return ResourceManager.getDrawable("ui/ui-white-squircle-" + radius, color);
     }
 
     public static Drawable getSquircleBtm (int radius, Color color) {
-        return Resources.getDrawable("ui/ui-white-squircle-bottom-" + radius, color);
+        return ResourceManager.getDrawable("ui/ui-white-squircle-bottom-" + radius, color);
     }
 
     public static Drawable getBorder (int radius, Color color) {
-        return Resources.getDrawable("ui/ui-white-squircle-border-" + radius, color);
+        return ResourceManager.getDrawable("ui/ui-white-squircle-border-" + radius, color);
     }
 
     public static Drawable getLeaf (int radius, Color color) {
-        return Resources.getDrawable("ui/ui-white-leaf-" + radius, color);
+        return ResourceManager.getDrawable("ui/ui-white-leaf-" + radius, color);
     }
 }

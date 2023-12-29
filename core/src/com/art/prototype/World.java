@@ -146,7 +146,7 @@ public class World {
 
     public void draw (ShapeRenderer shapeRenderer) {
         player.draw(shapeRenderer);
-        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.setColor(Color.BLACK);
         for (StaticBody staticBody : staticBodies) {
             shapeRenderer.rect(staticBody.pos.x, staticBody.pos.y, staticBody.getSize().x, staticBody.getSize().y);
         }
