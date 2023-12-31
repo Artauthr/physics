@@ -1,13 +1,10 @@
 package com.art.prototype.ui;
 
-import com.art.prototype.api.API;
-import com.art.prototype.resources.ResourceManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import lombok.Getter;
@@ -20,6 +17,8 @@ public class GameUI {
     private Table rootUI;
     private MainScreenLayout mainScreenLayout;
     private Table layoutParent;
+
+    @Getter
     private Cell<Table> layoutCell;
 
     public GameUI (Viewport viewport, Batch batch) {
@@ -47,6 +46,8 @@ public class GameUI {
         BitmapFont font = new BitmapFont();
     }
 
+//    public void res
+
     public void setLayout (Table layoutTable) {
         this.layoutCell.setActor(layoutTable);
     }
@@ -59,5 +60,11 @@ public class GameUI {
     public void draw () {
         stage.getViewport().apply();
         stage.draw();
+    }
+
+    public void setMainLayout() {
+        if (this.layoutCell.getActor() != mainScreenLayout) {
+            this.layoutCell.setActor(mainScreenLayout);
+        }
     }
 }

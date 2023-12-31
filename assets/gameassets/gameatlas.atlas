@@ -4,9 +4,43 @@ size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
+ui/square-border
+  rotate: false
+  xy: 349, 110
+  size: 18, 18
+  split: 7, 8, 7, 8
+  pad: 0, 0, 0, 0
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+ui/square-border-thick
+  rotate: false
+  xy: 425, 42
+  size: 12, 12
+  split: 5, 5, 5, 5
+  pad: 0, 0, 0, 0
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+ui/square-border-thick-big
+  rotate: false
+  xy: 125, 18
+  size: 24, 24
+  split: 10, 10, 10, 10
+  pad: 0, 0, 0, 0
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ui/ui-more-button
+  rotate: false
+  xy: 562, 137
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
 ui/ui-white-pixel
   rotate: false
-  xy: 349, 118
+  xy: 445, 70
   size: 10, 10
   split: 3, 3, 3, 3
   pad: 0, 0, 0, 0
@@ -33,7 +67,7 @@ ui/ui-white-squircle-19
   index: -1
 ui/ui-white-squircle-20
   rotate: false
-  xy: 562, 140
+  xy: 971, 96
   size: 42, 42
   split: 20, 19, 20, 20
   pad: 0, 0, 0, 0

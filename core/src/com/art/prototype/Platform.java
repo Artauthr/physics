@@ -10,10 +10,10 @@ public class Platform extends StaticBody {
     public Platform () {
     }
 
-    public void draw (ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(pos.x, pos.y, size.x, size.y);
-    }
+//    public void draw (ShapeRenderer shapeRenderer) {
+//        shapeRenderer.setColor(Color.GREEN);
+//        shapeRenderer.rect(pos.x, pos.y, size.x, size.y);
+//    }
 
     public static Platform MAKE_GROUND_PLATFORM () {
         Platform platform = new Platform();

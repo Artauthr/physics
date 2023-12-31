@@ -7,7 +7,7 @@ public enum FontSize {
     SIZE_22(22),
     SIZE_24(24),
     SIZE_28(28),
-    SIZE_80(80),
+    SIZE_40(40),
     ;
 
     private int size;

@@ -1,18 +1,19 @@
 package com.art.prototype;
 
+import com.art.prototype.api.API;
 import com.art.prototype.editor.LevelData;
 import com.art.prototype.editor.PlatformData;
+import com.art.prototype.render.Graphics2D;
+import com.art.prototype.ui.Colors;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.logging.Level;
 
 public class World {
     /*
@@ -38,6 +39,9 @@ public class World {
 
     private final float TIME_STEP = 1 / 60f;
 
+    @Setter
+    private Rectangle lastDebugRect;
+
 
     public World () {
         forces = new Vector2(0, GRAVITY);
@@ -53,7 +57,6 @@ public class World {
 
     public void doPhysicsStep(float deltaTime) {
         // fixed time step
-        // max frame time to avoid spiral of death (on slow devices)
         float frameTime = Math.min(deltaTime, 0.15f);
         accumulator += frameTime;
         while (accumulator >= TIME_STEP) {
@@ -97,12 +100,15 @@ public class World {
         }
     }
 
-    public void loadFromLevelData (LevelData levelData) {
+    public void loadFromLevelData (LevelData levelData, boolean resetPlayer) {
         this.staticBodies.clear();
         final Array<PlatformData> data = levelData.getPlatformDataArray();
         for (PlatformData datum : data) {
             final Platform platform = Platform.fromPlatformData(datum);
             this.staticBodies.add(platform);
+        }
+        if (resetPlayer) {
+            player.reset();
         }
     }
 
@@ -136,21 +142,33 @@ public class World {
 
     }
 
-    public Platform spawnPlatformAt (float x, float y) {
+    public void spawnPlatformAt (float x, float y) {
         Platform platform = new Platform();
         platform.setPos(x, y);
         platform.setSize(10, 1);
         staticBodies.add(platform);
-        return platform;
+    }
+
+    public void spawnPlatformAt (Vector2 point) {
+        spawnPlatformAt(point.x, point.y);
     }
 
     public void draw (ShapeRenderer shapeRenderer) {
         player.draw(shapeRenderer);
-        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.setColor(Colors.TOXIC_GREEN);
         for (StaticBody staticBody : staticBodies) {
             shapeRenderer.rect(staticBody.pos.x, staticBody.pos.y, staticBody.getSize().x, staticBody.getSize().y);
         }
     }
+
+    public void drawDebug (ShapeRenderer shapeRenderer) {
+        if (lastDebugRect != null) {
+            shapeRenderer.setColor(Color.GOLD);
+            shapeRenderer.rect(lastDebugRect.x, lastDebugRect.y, lastDebugRect.width, lastDebugRect.height);
+        }
+    }
+
+
 
 
 
@@ -172,4 +190,7 @@ public class World {
         this.staticBodies.add(body);
     }
 
+    public void removeStaticBody(StaticBody currentHoveredObject) {
+        System.out.println(this.staticBodies.removeValue(currentHoveredObject, false));
+    }
 }

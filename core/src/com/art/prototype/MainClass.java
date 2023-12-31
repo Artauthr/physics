@@ -2,22 +2,21 @@ package com.art.prototype;
 
 import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
-import com.art.prototype.editor.LevelData;
+import com.art.prototype.input.InputManager;
+import com.art.prototype.input.MainInput;
 import com.art.prototype.input.WorldInteraction;
+import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
+import com.art.prototype.ui.Colors;
 import com.art.prototype.ui.GameUI;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainClass extends ApplicationAdapter {
@@ -33,93 +32,61 @@ public class MainClass extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		spriteBatch = new SpriteBatch();
-		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setAutoShapeType(true);
-
-		final API instance = API.getInstance();
+		//init API;
+		API.getInstance();
 
 		ResourceManager resourceManager = API.get(ResourceManager.class);
 		resourceManager.startLoading();
-		while (!resourceManager.updateLoading()) {
+		while (!resourceManager.updateLoading()) { // TODO: 12/30/2023 this is not working
 			resourceManager.updateLoading();
 		}
-
-		//viewport
-		extendViewport = new ExtendViewport(100, 50);
-		camera = extendViewport.getCamera();
-		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0); // Center the camera
 
 		world = API.get(World.class);
 
 		///ui
-		ScreenViewport uiViewport = new ScreenViewport();
-		uiViewport.setUnitsPerPixel(2f);
-		gameUI = new GameUI(uiViewport, spriteBatch);
+		Graphics2D graphics = API.get(Graphics2D.class);
+		gameUI = new GameUI(graphics.getUiViewport(), graphics.getBatch());
 		API.register(gameUI);
 
 		player = new Player();
 		world.setPlayer(player);
 		ground = Platform.MAKE_GROUND_PLATFORM();
 
-		WorldInteraction worldInteraction = new WorldInteraction();
-		worldInteraction.setWorldRef(world);
-		worldInteraction.setExtendViewport(extendViewport);
 
-		InputMultiplexer multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor(worldInteraction);
-		multiplexer.addProcessor(gameUI.getStage());
+		API.get(Editor.class).setupHighlighter(); // TODO: 12/30/2023 fix this shit
 
-		Gdx.input.setInputProcessor(multiplexer);
-
-
-
-
-		System.out.println("LOAD FINISHED");
+		InputManager inputManager = API.get(InputManager.class);
+		inputManager.addUIProcessor(); // TODO: 12/30/2023 fix this shit too
+		inputManager.registerProcessor(WorldInteraction.class);
+		inputManager.registerProcessor(MainInput.class);
+		inputManager.enableAll();
 
 
 		world.addDynamicBody(player);
 		world.addStaticBody(ground);
+
+		this.extendViewport = graphics.getGameViewport();
+		this.shapeRenderer = graphics.getShapeRenderer();
+		this.camera = graphics.getGameCamera();
+		this.spriteBatch = graphics.getBatch();
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(0.3f, 0.3f, 0.3f, 1);
+		ScreenUtils.clear(Colors.SPACE);
+		final float deltaTime = Gdx.graphics.getDeltaTime();
 
 
 		extendViewport.apply();
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		final float deltaTime = Gdx.graphics.getDeltaTime();
 		world.doPhysicsStep(deltaTime);
 		player.update(deltaTime);
 
 		shapeRenderer.begin();
 		shapeRenderer.setColor(Color.WHITE);
 		world.draw(shapeRenderer);
+		world.drawDebug(shapeRenderer);
 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
-			API.get(Editor.class).saveToFile();
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-			String directoryPath = "savedLevels";
-
-			// Get the directory as a FileHandle
-			FileHandle dirHandle = Gdx.files.internal(directoryPath);
-
-			// List all files in the directory
-			FileHandle[] files = dirHandle.list();
-
-			// Iterate through the files and print their names
-			String name = "";
-			if (files.length > 0) {
-				name = files[0].file().getName();
-			}
-
-			String finalName = directoryPath + "/" + name;
-
-			final LevelData levelData = API.get(Editor.class).loadLevelData(finalName);
-			API.get(World.class).loadFromLevelData(levelData);
-		}
 		shapeRenderer.end();
 
 		gameUI.act();

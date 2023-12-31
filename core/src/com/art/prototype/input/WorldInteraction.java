@@ -5,8 +5,11 @@ import com.art.prototype.Utils;
 import com.art.prototype.World;
 import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
+import com.art.prototype.render.Graphics2D;
+import com.art.prototype.ui.GameUI;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -15,17 +18,18 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.Setter;
 
 public class WorldInteraction implements InputProcessor {
-
-    @Setter
-    private World worldRef;
-
-    @Setter
-    private ExtendViewport extendViewport;
-
     private Vector2 tmp1 = new Vector2();
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.ESCAPE) {
+            Editor editor = API.get(Editor.class);
+            if (editor.getEditorState() != Editor.State.DISABLED) {
+                editor.quitMode();
+                return true;
+            }
+            API.get(GameUI.class).setMainLayout();
+        }
         return false;
     }
 
@@ -47,12 +51,34 @@ public class WorldInteraction implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.RIGHT) {
-            Vector2 tmp = Pools.obtain(Vector2.class);
-            tmp.set(screenX, screenY);
+//            Vector2 tmp = Pools.obtain(Vector2.class);
+//            tmp.set(screenX, screenY);
+//
+//            extendViewport.unproject(tmp);
+//            worldRef.spawnPlatformAt(tmp.x, tmp.y);
+//            Pools.free(tmp);
+        }
 
-            extendViewport.unproject(tmp);
-            worldRef.spawnPlatformAt(tmp.x, tmp.y);
-            Pools.free(tmp);
+        if (button == Input.Buttons.LEFT) {
+            Editor editor = API.get(Editor.class);
+            Editor.State editorState = editor.getEditorState();
+            switch (editorState) {
+                case ADDING:
+                    Vector2 tmp = Pools.obtain(Vector2.class);
+                    tmp.set(screenX, screenY);
+                    Graphics2D.get().getGameViewport().unproject(tmp);
+                    API.get(World.class).spawnPlatformAt(tmp.x, tmp.y);
+                    System.out.println("PLATFORM SPAWNED AT " + tmp);
+                    return true;
+                case REMOVING:
+                    StaticBody currentHoveredObject = editor.getCurrentHoveredObject();
+                    if (currentHoveredObject != null) {
+                        API.get(World.class).removeStaticBody(currentHoveredObject);
+                    }
+                    return true;
+                case DISABLED:
+                    return false;
+            }
         }
         return false;
     }
@@ -75,20 +101,36 @@ public class WorldInteraction implements InputProcessor {
         switch (editorState) {
             case ADDING:
 
-                break;
+                return false;
             case REMOVING:
                 tmp1.set(screenX, screenY);
-                extendViewport.unproject(tmp1);
+                Graphics2D.get().getGameViewport().unproject(tmp1);
                 World world = API.get(World.class);
                 Array<StaticBody> staticBodies = world.getStaticBodies();
+                boolean found = false;
 
                 for (StaticBody staticBody : staticBodies) {
                     Rectangle physicsBodyRect = Utils.getPhysicsBodyRect(staticBody);
+                    // TODO: 12/30/2023 Optimise??? <- check the date tho
+                    float rW = (physicsBodyRect.width * 1.2f - physicsBodyRect.width) * 0.5f;
+                    float rH = (physicsBodyRect.height * 2.1f - physicsBodyRect.height) * 0.5f;
+                    physicsBodyRect.setSize(physicsBodyRect.width * 1.2f, physicsBodyRect.height * 2.1f);
+                    physicsBodyRect.setPosition(physicsBodyRect.x - rW, physicsBodyRect.y - rH);
+
                     if (physicsBodyRect.contains(tmp1)) {
-                        editor.highlightRed();
+//                        API.get(World.class).setLastDebugRect(physicsBodyRect);
+                        editor.setCurrentHoveredObject(staticBody);
+                        editor.highlightPhysicsObject(staticBody, Color.RED);
+                        found = true;
                     }
                 }
-                break;
+
+                if (!found) {
+                    editor.hideHighlighter();
+                    editor.setCurrentHoveredObject(null);
+                }
+
+                return true;
             case DISABLED:
                 return false;
         }

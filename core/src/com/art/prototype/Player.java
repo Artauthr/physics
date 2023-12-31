@@ -85,9 +85,6 @@ public class Player extends DynamicBody {
     When Gdx.input.isKeyPressed() was true but is false again => keyUp
      */
 
-    public void queueInput (int keycode) {
-        keycodes.add(keycode);
-    }
 
     private Vector2 tmp = new Vector2();
 
@@ -97,24 +94,14 @@ public class Player extends DynamicBody {
         return tmp;
     }
 
-    private void drainInput () {
-        for (Integer keycode : keycodes) {
-            if (keycode == Input.Keys.A) {
-                velocity.x = -HORIZONTAL_SPEED;
-            } else if (keycode == Input.Keys.D) {
-                velocity.x = HORIZONTAL_SPEED;
-            } else {
-                velocity.x = 0;
-            }
-            if (keycode == Input.Keys.SPACE) {
-                jump();
-            }
-        }
-    }
-
-
     public void draw (ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(pos.x, pos.y, size.x, size.y);
+    }
+
+    public void reset () {
+        velocity.setZero();
+        Vector2 middle = Utils.middleOfGameScreen();
+        pos.set(middle);
     }
 }

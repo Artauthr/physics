@@ -60,6 +60,7 @@ public class ResourceManager {
             FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
             parameter.size = fontSize;
             BitmapFont generatedFont = generator.generateFont(parameter);
+            generatedFont.setUseIntegerPositions(false);
             sizeFontMap.put(value, generatedFont);
         }
         generator.dispose(); // don't forget to dispose to avoid memory leaks!

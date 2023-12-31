@@ -1,10 +1,8 @@
 package com.art.prototype.ui;
 
 import com.art.prototype.api.API;
-import com.art.prototype.ui.buttons.EasyIconButton;
-import com.art.prototype.ui.buttons.EasyOffsetButton;
+import com.art.prototype.ui.buttons.FlatTextButton;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MainScreenLayout extends Table {
@@ -12,8 +10,7 @@ public class MainScreenLayout extends Table {
     private Table top;
     private Table center;
     private Table bottom;
-    private Button button;
-    private EasyIconButton openLeftSideButton;
+    private FlatTextButton openLeftSideButton;
     private EditorUI editorUI;
 
     public MainScreenLayout () {
@@ -38,11 +35,11 @@ public class MainScreenLayout extends Table {
 
     private Table constructTopSegment () {
         final Table segment = new Table();
-        openLeftSideButton = new EasyIconButton(EasyOffsetButton.Style.BLUE, "ui/ui-white-pixel");
-        openLeftSideButton.setIcon(null);
+        openLeftSideButton = new FlatTextButton(FontSize.SIZE_40, "MENU");
 
         openLeftSideButton.setOnClick(() -> API.get(GameUI.class).setLayout(editorUI));
-        segment.add(openLeftSideButton).expandX().right().padRight(25).width(150).padTop(25).height(150);
+        openLeftSideButton.setColor(Colors.CORAL);
+        segment.add(openLeftSideButton).expandX().right().padRight(25).width(225).padTop(25).height(120);
 
         return segment;
     }

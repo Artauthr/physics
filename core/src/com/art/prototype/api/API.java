@@ -3,6 +3,7 @@ package com.art.prototype.api;
 import com.art.prototype.World;
 import com.art.prototype.editor.Editor;
 import com.art.prototype.input.InputManager;
+import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -18,6 +19,7 @@ public class API {
     }
 
     private void registerClasses () {
+        register(Graphics2D.class);
         register(InputManager.class);
         register(Editor.class);
         register(World.class);
