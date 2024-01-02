@@ -5,13 +5,11 @@ import com.art.prototype.ui.buttons.FlatTextButton;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-public class MainScreenLayout extends Table {
-    private Table content;
+public class MainScreenLayout extends ALayout {
     private Table top;
     private Table center;
     private Table bottom;
     private FlatTextButton openLeftSideButton;
-    private EditorUI editorUI;
 
     public MainScreenLayout () {
         this.setFillParent(true);
@@ -20,8 +18,6 @@ public class MainScreenLayout extends Table {
         top = constructTopSegment();
         center = constructCenterSegment();
         bottom = constructBottomSegment();
-
-        editorUI = new EditorUI();
 
         this.top();
         this.defaults().growX();
@@ -37,7 +33,7 @@ public class MainScreenLayout extends Table {
         final Table segment = new Table();
         openLeftSideButton = new FlatTextButton(FontSize.SIZE_40, "MENU");
 
-        openLeftSideButton.setOnClick(() -> API.get(GameUI.class).setLayout(editorUI));
+        openLeftSideButton.setOnClick(() -> API.get(GameUI.class).setLayout(EditorUI.class));
         openLeftSideButton.setColor(Colors.CORAL);
         segment.add(openLeftSideButton).expandX().right().padRight(25).width(225).padTop(25).height(120);
 

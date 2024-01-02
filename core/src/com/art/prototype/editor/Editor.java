@@ -7,6 +7,7 @@ import com.art.prototype.World;
 import com.art.prototype.api.API;
 import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
+import com.art.prototype.ui.ALayout;
 import com.art.prototype.ui.Colors;
 import com.art.prototype.ui.EditorUI;
 import com.art.prototype.ui.GameUI;
@@ -37,6 +38,8 @@ public class Editor {
     private Image highlighter;
     private Table highlightWrap;
 
+    private StaticBody currentTransformObject;
+
     @Getter
     @Setter
     private StaticBody currentHoveredObject;
@@ -62,20 +65,20 @@ public class Editor {
         highlightWrap.add(highlighter);
     }
 
-    public void enterAddMode () {
-        this.editorState = State.ADDING;
-        onModeChanged();
-    }
-
-    public void enterRemoveMode () {
-        this.editorState = State.REMOVING;
+    public void enterState (State state) {
+        this.editorState = state;
         onModeChanged();
     }
 
     public void onModeChanged () {
-        Cell<Table> layoutCell = API.get(GameUI.class).getLayoutCell();
-        Table actor = layoutCell.getActor();
-        ((EditorUI) actor).updateLabel();
+        EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
+        editorUI.updateLabel();
+
+        if (!(this.editorState == State.DISABLED)) {
+            editorUI.makeTransparent();
+        } else {
+            editorUI.revertTransparent();
+        }
     }
 
     public void quitMode () {
@@ -92,7 +95,7 @@ public class Editor {
 
         rootUI.addActor(highlighter);
 
-        Vector2 unProject = Utils.unProject(object);
+        Vector2 unProject = Utils.unProjectScl(object);
 
         highlighter.setPosition(unProject.x, unProject.y);
         Graphics2D graphics = API.get(Graphics2D.class);
@@ -105,6 +108,13 @@ public class Editor {
 
     public void hideHighlighter () {
         highlighter.setVisible(false);
+    }
+
+
+    public void addGizmoToObject (StaticBody body) {
+        EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
+        editorUI.addTransformGizmo(body);
+        this.currentTransformObject = body;
     }
 
     public void saveToFile () {
@@ -141,6 +151,7 @@ public class Editor {
         DISABLED("Editor Mode", Color.WHITE),
         ADDING("Adding mode", Color.GREEN),
         REMOVING("Removing mode", Colors.DARKISH_RED),
+        RESIZING("Resizing mode", Colors.SKY);
         ;
 
         @Getter

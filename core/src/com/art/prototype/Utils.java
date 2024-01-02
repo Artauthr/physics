@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Utils {
     private static Rectangle tmp = new Rectangle();
@@ -29,10 +28,16 @@ public class Utils {
         return tmp.set(object.pos.x, object.pos.y, object.size.x, object.size.y);
     }
 
-    public static Vector2 unProject (PhysicsObject object) {
+    public static Vector2 unProjectScl(PhysicsObject object) {
         Vector2 cpy = object.getPos().cpy();
         API.get(Graphics2D.class).getGameViewport().project(cpy);
         cpy.scl(2);
+        return cpy;
+    }
+
+    public static Vector2 unProject(PhysicsObject object) {
+        Vector2 cpy = object.getPos().cpy();
+        API.get(Graphics2D.class).getGameViewport().project(cpy);
         return cpy;
     }
 

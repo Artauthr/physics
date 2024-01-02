@@ -2,6 +2,7 @@ package com.art.prototype.api;
 
 import com.art.prototype.World;
 import com.art.prototype.editor.Editor;
+import com.art.prototype.input.CameraController;
 import com.art.prototype.input.InputManager;
 import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
@@ -24,6 +25,7 @@ public class API {
         register(Editor.class);
         register(World.class);
         register(ResourceManager.class);
+        register(CameraController.class);
     }
 
     public static <T> T get (Class<T> cls) {

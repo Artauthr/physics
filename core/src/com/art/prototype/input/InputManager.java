@@ -28,6 +28,10 @@ public class InputManager {
         multiplexer.addProcessor(stage);
     }
 
+    public InputProcessor getInputProcessor (Class<? extends InputProcessor> cls) {
+        return map.get(cls);
+    }
+
     private void setAsGlobalInputProcessor() {
         for (ObjectMap.Entry<Class<? extends InputProcessor>, InputProcessor> entry : map) {
             multiplexer.addProcessor(entry.value);

@@ -5,6 +5,7 @@ import com.art.prototype.editor.LevelData;
 import com.art.prototype.editor.PlatformData;
 import com.art.prototype.render.Graphics2D;
 import com.art.prototype.ui.Colors;
+import com.art.prototype.ui.GameUI;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -27,6 +28,7 @@ public class World {
     @Getter
     private Array<StaticBody> staticBodies;
 
+    @Getter
     @Setter
     private Player player;
 
@@ -89,12 +91,13 @@ public class World {
     private void collisionCheckSingle () {
         applyForcePlayer(player);
         for (StaticBody staticBody : staticBodies) {
-            Utils.setupPlayerDelayedRectangle(tmp2, player, player.getNextFramePos());
+//            Utils.set(tmp2, player, player.getNextFramePos());
+            Utils.setupRectangleFor(tmp2, player);
             Utils.setupRectangleFor(tmp1, staticBody);
             if (Intersector.overlaps(tmp1, tmp2)) {
                 player.getVelocity().y = 0;
                 player.getVelocity().x = 0;
-//                player.pos.y = staticBody.pos.y + staticBody.size.y;
+                player.pos.y = staticBody.pos.y + staticBody.size.y;
 //                player.setJumpAmount(76f); //hardcoded get from player class
             }
         }
@@ -169,8 +172,15 @@ public class World {
     }
 
 
-
-
+    public StaticBody getPlatformAt (float x, float y) {
+        for (StaticBody staticBody : staticBodies) {
+            Utils.setupRectangleFor(tmp1, staticBody);
+            if (tmp1.contains(x, y)) {
+                return staticBody;
+            }
+        }
+        return null;
+    }
 
     private void applyForce (DynamicBody object) {
         final Vector2 velocity = object.getVelocity();

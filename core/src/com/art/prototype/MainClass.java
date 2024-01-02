@@ -2,6 +2,7 @@ package com.art.prototype;
 
 import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
+import com.art.prototype.input.CameraController;
 import com.art.prototype.input.InputManager;
 import com.art.prototype.input.MainInput;
 import com.art.prototype.input.WorldInteraction;
@@ -75,12 +76,12 @@ public class MainClass extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(Colors.SPACE);
 		final float deltaTime = Gdx.graphics.getDeltaTime();
-
+		API.get(CameraController.class).update(deltaTime);
 
 		extendViewport.apply();
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		world.doPhysicsStep(deltaTime);
 		player.update(deltaTime);
+		world.doPhysicsStep(deltaTime);
 
 		shapeRenderer.begin();
 		shapeRenderer.setColor(Color.WHITE);

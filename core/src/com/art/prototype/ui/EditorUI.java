@@ -1,5 +1,6 @@
 package com.art.prototype.ui;
 
+import com.art.prototype.StaticBody;
 import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
 import com.art.prototype.ui.buttons.*;
@@ -9,12 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
-public class EditorUI extends Table {
+public class EditorUI extends ALayout {
     private FlatTextButton removeEntityButton;
+    private FlatTextButton transformButton;
     private FlatTextButton addEntityButton;
     private FlatTextButton goBackButton;
     private FlatIconButton showMoreButton;
     private Label modeLabel;
+    private EditorGizmo gizmo;
 
     public EditorUI () {
         setFillParent(true);
@@ -22,8 +25,9 @@ public class EditorUI extends Table {
         Table bottom = constructBottomSegment();
         Table top = constructTopSegment();
 
-        this.top();
+        gizmo = new EditorGizmo();
 
+        this.top();
         this.add(top).growX();
         this.row();
         this.add().grow();
@@ -63,7 +67,12 @@ public class EditorUI extends Table {
         this.modeLabel = LabelFactory.create(FontSize.SIZE_40);
         modeLabel.setAlignment(Align.center);
 
-        wrapper.add(modeLabel).expand().top().padTop(35);
+        Label infoLabel = LabelFactory.create(FontSize.SIZE_28, "(press ESC to quit)", Color.WHITE);
+        final Table container = new Table();
+        container.add(modeLabel);
+        container.add(infoLabel).spaceLeft(20).padTop(5);
+
+        wrapper.add(container).expand().top().padTop(35);
         this.addActor(wrapper);
         updateLabel();
     }
@@ -73,16 +82,21 @@ public class EditorUI extends Table {
         table.pad(30);
         removeEntityButton = new FlatTextButton(FontSize.SIZE_40, "REMOVE");
         removeEntityButton.setColor(Colors.CORAL);
-        removeEntityButton.setOnClick(() -> API.get(Editor.class).enterRemoveMode());
+        removeEntityButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.REMOVING));
 
         addEntityButton = new FlatTextButton(FontSize.SIZE_40, "ADD");
         addEntityButton.setColor(Colors.CORAL);
-        addEntityButton.setOnClick(() -> API.get(Editor.class).enterAddMode());
+        addEntityButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.ADDING));
+
+        transformButton = new FlatTextButton(FontSize.SIZE_40, "RESIZE");
+        transformButton.setColor(Colors.CORAL);
+        transformButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.RESIZING));
 
         table.defaults().size(265, 100).spaceLeft(175);
 
-        table.add(addEntityButton).expandX().right();
-        table.add(removeEntityButton).expandX().left();
+        table.add(addEntityButton).expandX();
+        table.add(removeEntityButton).expandX();
+        table.add(transformButton).expandX();
 
         return table;
     }
@@ -96,4 +110,15 @@ public class EditorUI extends Table {
         this.modeLabel.setColor(color);
     }
 
+    public void addTransformGizmo(StaticBody object) {
+        gizmo.bindToObject(object);
+    }
+
+    public void makeTransparent () {
+        this.getColor().a = 0.45f;
+    }
+
+    public void revertTransparent() {
+        this.getColor().a = 1;
+    }
 }

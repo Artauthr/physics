@@ -24,11 +24,20 @@ ui/square-border-thick
   index: -1
 ui/square-border-thick-big
   rotate: false
-  xy: 125, 18
+  xy: 445, 56
   size: 24, 24
   split: 10, 10, 10, 10
   pad: 0, 0, 0, 0
   orig: 24, 24
+  offset: 0, 0
+  index: -1
+ui/ui-circle
+  rotate: false
+  xy: 125, 14
+  size: 30, 28
+  split: 15, 14, 0, 0
+  pad: 0, 0, 0, 0
+  orig: 30, 28
   offset: 0, 0
   index: -1
 ui/ui-more-button
@@ -40,7 +49,7 @@ ui/ui-more-button
   index: -1
 ui/ui-white-pixel
   rotate: false
-  xy: 445, 70
+  xy: 125, 2
   size: 10, 10
   split: 3, 3, 3, 3
   pad: 0, 0, 0, 0
