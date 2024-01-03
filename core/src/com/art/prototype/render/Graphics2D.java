@@ -24,6 +24,8 @@ public class Graphics2D {
     private Camera gameCamera;
     @Getter
     private Camera uiCamera;
+    @Getter
+    private float viewportRatio;
 
     public Graphics2D() {
         initGraphics();
@@ -44,6 +46,14 @@ public class Graphics2D {
         uiViewport = new ScreenViewport();
         uiViewport.setUnitsPerPixel(GlobalVariables.UNITS_PER_PIXEL_UI);
         this.uiCamera = uiViewport.getCamera();
+
+    }
+
+    public void calculateViewportRatio () {
+        Graphics2D graphics = API.get(Graphics2D.class);
+        float v1 = graphics.getGameViewport().getWorldWidth() + graphics.getGameViewport().getWorldHeight();
+        float v2 = graphics.getUiViewport().getWorldWidth() + graphics.getUiViewport().getWorldHeight();
+        this.viewportRatio = v2 / v1;
     }
 
 //    public Vector2 unprojectMouseToUI (float x, float y) {

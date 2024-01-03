@@ -148,7 +148,7 @@ public class World {
     public void spawnPlatformAt (float x, float y) {
         Platform platform = new Platform();
         platform.setPos(x, y);
-        platform.setSize(10, 1);
+        platform.setSize(10, 6);
         staticBodies.add(platform);
     }
 

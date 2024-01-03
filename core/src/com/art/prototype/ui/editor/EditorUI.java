@@ -1,14 +1,19 @@
-package com.art.prototype.ui;
+package com.art.prototype.ui.editor;
 
 import com.art.prototype.StaticBody;
 import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
+import com.art.prototype.ui.ALayout;
+import com.art.prototype.ui.Colors;
+import com.art.prototype.ui.FontSize;
+import com.art.prototype.ui.GameUI;
 import com.art.prototype.ui.buttons.*;
 import com.art.prototype.ui.labels.LabelFactory;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import lombok.Getter;
 
 public class EditorUI extends ALayout {
     private FlatTextButton removeEntityButton;
@@ -17,7 +22,9 @@ public class EditorUI extends ALayout {
     private FlatTextButton goBackButton;
     private FlatIconButton showMoreButton;
     private Label modeLabel;
-    private EditorGizmo gizmo;
+
+    @Getter
+    private ObjectTransformer transformer;
 
     public EditorUI () {
         setFillParent(true);
@@ -25,7 +32,7 @@ public class EditorUI extends ALayout {
         Table bottom = constructBottomSegment();
         Table top = constructTopSegment();
 
-        gizmo = new EditorGizmo();
+        transformer = new ObjectTransformer();
 
         this.top();
         this.add(top).growX();
@@ -110,8 +117,8 @@ public class EditorUI extends ALayout {
         this.modeLabel.setColor(color);
     }
 
-    public void addTransformGizmo(StaticBody object) {
-        gizmo.bindToObject(object);
+    public void addTransformWidget(StaticBody object) {
+        transformer.bindToObject(object);
     }
 
     public void makeTransparent () {

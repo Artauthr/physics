@@ -19,7 +19,6 @@ public class GameUI {
 
     @Getter
     private Table rootUI;
-    private MainScreenLayout mainScreenLayout;
     private Table layoutParent;
 
     @Getter
@@ -84,8 +83,6 @@ public class GameUI {
     }
 
     public void setMainLayout() {
-        if (this.layoutCell.getActor() != mainScreenLayout) {
-            this.layoutCell.setActor(mainScreenLayout);
-        }
+        this.setLayout(MainScreenLayout.class);
     }
 }

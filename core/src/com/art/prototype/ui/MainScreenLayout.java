@@ -2,6 +2,7 @@ package com.art.prototype.ui;
 
 import com.art.prototype.api.API;
 import com.art.prototype.ui.buttons.FlatTextButton;
+import com.art.prototype.ui.editor.EditorUI;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 

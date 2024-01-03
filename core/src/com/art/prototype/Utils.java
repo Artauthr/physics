@@ -31,7 +31,7 @@ public class Utils {
     public static Vector2 unProjectScl(PhysicsObject object) {
         Vector2 cpy = object.getPos().cpy();
         API.get(Graphics2D.class).getGameViewport().project(cpy);
-        cpy.scl(2);
+        cpy.scl(GlobalVariables.UNITS_PER_PIXEL_UI);
         return cpy;
     }
 

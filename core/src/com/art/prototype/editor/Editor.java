@@ -9,14 +9,13 @@ import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
 import com.art.prototype.ui.ALayout;
 import com.art.prototype.ui.Colors;
-import com.art.prototype.ui.EditorUI;
+import com.art.prototype.ui.editor.EditorUI;
 import com.art.prototype.ui.GameUI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -37,8 +36,6 @@ public class Editor {
 
     private Image highlighter;
     private Table highlightWrap;
-
-    private StaticBody currentTransformObject;
 
     @Getter
     @Setter
@@ -82,6 +79,10 @@ public class Editor {
     }
 
     public void quitMode () {
+        if (this.editorState == State.RESIZING) {
+            EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
+            editorUI.getTransformer().unBind();
+        }
         this.editorState = State.DISABLED;
         onModeChanged();
     }
@@ -113,8 +114,7 @@ public class Editor {
 
     public void addGizmoToObject (StaticBody body) {
         EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
-        editorUI.addTransformGizmo(body);
-        this.currentTransformObject = body;
+        editorUI.addTransformWidget(body);
     }
 
     public void saveToFile () {

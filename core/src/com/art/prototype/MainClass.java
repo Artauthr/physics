@@ -107,5 +107,6 @@ public class MainClass extends ApplicationAdapter {
 		final Viewport viewport = gameUI.getStage().getViewport();
 		viewport.update(width, height);
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0); // Center the camera
+		Graphics2D.get().calculateViewportRatio();
 	}
 }

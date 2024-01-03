@@ -27,9 +27,10 @@ public class WorldInteraction implements InputProcessor {
             Editor editor = API.get(Editor.class);
             if (editor.getEditorState() != Editor.State.DISABLED) {
                 editor.quitMode();
-                return true;
+            } else {
+                API.get(GameUI.class).setMainLayout();
             }
-            API.get(GameUI.class).setMainLayout();
+            return true;
         }
         return false;
     }
@@ -106,7 +107,7 @@ public class WorldInteraction implements InputProcessor {
         timer += Gdx.graphics.getDeltaTime();
 
         if (timer >= MOUSE_POLL_RATE) {
-            findCurrentHovered(screenX, screenY);
+            editor.setCurrentHoveredObject(findCurrentHovered(screenX, screenY));
             timer = 0;
         }
 
@@ -128,7 +129,7 @@ public class WorldInteraction implements InputProcessor {
         return false;
     }
 
-    private final float MOUSE_POLL_RATE = 0.4f;
+    private final float MOUSE_POLL_RATE = 0.1f;
     private float timer = 0;
 
     private StaticBody findCurrentHovered (float screenX, float screenY) {
@@ -140,15 +141,13 @@ public class WorldInteraction implements InputProcessor {
 
         for (StaticBody staticBody : staticBodies) {
             Rectangle physicsBodyRect = Utils.getPhysicsBodyRect(staticBody);
-            // TODO: 12/30/2023 Optimise??? <- check the date tho
-            float rW = (physicsBodyRect.width * 1.2f - physicsBodyRect.width) * 0.5f;
-            float rH = (physicsBodyRect.height * 2.1f - physicsBodyRect.height) * 0.5f;
-            physicsBodyRect.setSize(physicsBodyRect.width * 1.2f, physicsBodyRect.height * 2.1f);
-            physicsBodyRect.setPosition(physicsBodyRect.x - rW, physicsBodyRect.y - rH);
+//            float rW = (physicsBodyRect.width * 1.2f - physicsBodyRect.width) * 0.5f;
+//            float rH = (physicsBodyRect.height * 2.1f - physicsBodyRect.height) * 0.5f;
+            physicsBodyRect.setSize(physicsBodyRect.width, physicsBodyRect.height);
+            physicsBodyRect.setPosition(physicsBodyRect.x, physicsBodyRect.y);
 
             if (physicsBodyRect.contains(tmp1)) {
                 editor.setCurrentHoveredObject(staticBody);
-                editor.highlightPhysicsObject(staticBody, Color.RED);
                 return staticBody;
             }
         }
