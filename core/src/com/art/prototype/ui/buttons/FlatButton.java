@@ -24,6 +24,9 @@ public abstract class FlatButton extends Table {
     @Setter
     protected Runnable onClick;
 
+    @Setter
+    protected Runnable onTouchDown;
+
 
     public FlatButton() {
         normalDrawable = ResourceManager.getDrawable("ui/square-border-thick-big", Colors.CORAL);
@@ -86,6 +89,9 @@ public abstract class FlatButton extends Table {
                 super.touchDown(event, x, y, pointer, button);
                 if (pointer == 0) {
                     beingPressed = true;
+                    if (onTouchDown != null) {
+                        onTouchDown.run();
+                    }
                     return true;
                 }
                 return false;
@@ -105,9 +111,10 @@ public abstract class FlatButton extends Table {
                     if (flatButton.onHover != null) {
                         isHovering = true;
                         flatButton.onHover.run();
+                        return;
                     }
                 }
-                super.enter(event, x, y, pointer, fromActor);
+//                super.enter(event, x, y, pointer, fromActor);
             }
 
             @Override

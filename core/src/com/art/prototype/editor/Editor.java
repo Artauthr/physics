@@ -7,7 +7,6 @@ import com.art.prototype.World;
 import com.art.prototype.api.API;
 import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
-import com.art.prototype.ui.ALayout;
 import com.art.prototype.ui.Colors;
 import com.art.prototype.ui.editor.EditorUI;
 import com.art.prototype.ui.GameUI;
@@ -15,11 +14,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,10 +28,6 @@ public class Editor {
 
     @Getter
     private State editorState;
-
-    private Array<Actor> fakeActors;
-    private Array<Actor> removeActors;
-
     private Image highlighter;
     private Table highlightWrap;
 
@@ -47,8 +41,6 @@ public class Editor {
 
     public Editor () {
         editorState = State.DISABLED;
-        fakeActors = new Array<>();
-        removeActors = new Array<>();
     }
 
     public void setupHighlighter () {
@@ -71,6 +63,9 @@ public class Editor {
         EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
         editorUI.updateLabel();
 
+        editorUI.getTransformer().unBind();
+
+
         if (!(this.editorState == State.DISABLED)) {
             editorUI.makeTransparent();
         } else {
@@ -79,16 +74,13 @@ public class Editor {
     }
 
     public void quitMode () {
-        if (this.editorState == State.RESIZING) {
-            EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
-            editorUI.getTransformer().unBind();
-        }
         this.editorState = State.DISABLED;
         onModeChanged();
     }
 
     public void highlightPhysicsObject (PhysicsObject object, Color color) {
         highlighter.setVisible(true);
+        highlighter.setTouchable(Touchable.disabled);
         GameUI gameUI = API.get(GameUI.class);
         Table rootUI = gameUI.getRootUI();
         highlighter.setColor(color);
@@ -100,9 +92,7 @@ public class Editor {
 
         highlighter.setPosition(unProject.x, unProject.y);
         Graphics2D graphics = API.get(Graphics2D.class);
-        float v1 = graphics.getGameViewport().getWorldWidth() + graphics.getGameViewport().getWorldHeight();
-        float v2 = graphics.getUiViewport().getWorldWidth() + graphics.getUiViewport().getWorldHeight();
-        float viewportRatio = v2 / v1;
+        float viewportRatio = graphics.getViewportRatio();
         highlighter.setSize(object.getSize().x * viewportRatio, object.getSize().y * viewportRatio);
 
     }
@@ -112,7 +102,7 @@ public class Editor {
     }
 
 
-    public void addGizmoToObject (StaticBody body) {
+    public void addTransformerToObject (StaticBody body) {
         EditorUI editorUI = API.get(GameUI.class).getLayout(EditorUI.class);
         editorUI.addTransformWidget(body);
     }
@@ -151,7 +141,7 @@ public class Editor {
         DISABLED("Editor Mode", Color.WHITE),
         ADDING("Adding mode", Color.GREEN),
         REMOVING("Removing mode", Colors.DARKISH_RED),
-        RESIZING("Resizing mode", Colors.SKY);
+        TRANSFORMING("Transform mode", Colors.SKY);
         ;
 
         @Getter

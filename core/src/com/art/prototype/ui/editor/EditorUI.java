@@ -39,7 +39,7 @@ public class EditorUI extends ALayout {
         this.row();
         this.add().grow();
         this.row();
-        this.add(bottom).expand().bottom().padBottom(100);
+        this.add(bottom).expand().bottom().padBottom(25);
 
         addModeLabel();
 
@@ -87,19 +87,19 @@ public class EditorUI extends ALayout {
     private Table constructBottomSegment () {
         final Table table = new Table();
         table.pad(30);
-        removeEntityButton = new FlatTextButton(FontSize.SIZE_40, "REMOVE");
+        removeEntityButton = new FlatTextButton(FontSize.SIZE_34, "REMOVE");
         removeEntityButton.setColor(Colors.CORAL);
         removeEntityButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.REMOVING));
 
-        addEntityButton = new FlatTextButton(FontSize.SIZE_40, "ADD");
+        addEntityButton = new FlatTextButton(FontSize.SIZE_34, "ADD");
         addEntityButton.setColor(Colors.CORAL);
         addEntityButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.ADDING));
 
-        transformButton = new FlatTextButton(FontSize.SIZE_40, "RESIZE");
+        transformButton = new FlatTextButton(FontSize.SIZE_34, "TRANSFORM");
         transformButton.setColor(Colors.CORAL);
-        transformButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.RESIZING));
+        transformButton.setOnClick(() -> API.get(Editor.class).enterState(Editor.State.TRANSFORMING));
 
-        table.defaults().size(265, 100).spaceLeft(175);
+        table.defaults().size(275, 100).spaceLeft(175);
 
         table.add(addEntityButton).expandX();
         table.add(removeEntityButton).expandX();

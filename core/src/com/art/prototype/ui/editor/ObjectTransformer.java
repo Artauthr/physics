@@ -3,6 +3,7 @@ package com.art.prototype.ui.editor;
 import com.art.prototype.StaticBody;
 import com.art.prototype.Utils;
 import com.art.prototype.api.API;
+import com.art.prototype.editor.Editor;
 import com.art.prototype.render.Graphics2D;
 import com.art.prototype.resources.ResourceManager;
 import com.art.prototype.ui.GameUI;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Scaling;
+import lombok.Getter;
 
 public class ObjectTransformer extends Table {
     private Array<ResizeHandle> handles;
@@ -26,7 +28,10 @@ public class ObjectTransformer extends Table {
     private final int CLAMP = 150;
     private Vector2 dragValues = new Vector2();
     private Vector2 startedMovingCoords = new Vector2();
-    private Table  inside;
+    private Table inside;
+
+    @Getter
+    private boolean active;
 
     public ObjectTransformer() {
         handles = new Array<>();
@@ -82,12 +87,14 @@ public class ObjectTransformer extends Table {
         this.binded = object;
         this.setPosition(unProject.x, unProject.y);
         this.setSize(object.getSize().x * viewportRatio, object.getSize().y * viewportRatio);
+        active = true;
     }
 
     public void unBind () {
         GameUI gameUI = API.get(GameUI.class);
         Table rootUI = gameUI.getRootUI();
         rootUI.removeActor(this);
+        active = false;
     }
 
     public void reEvaluateSizePos () {
