@@ -10,6 +10,8 @@ import com.art.prototype.ui.GameUI;
 import com.art.prototype.ui.buttons.*;
 import com.art.prototype.ui.labels.LabelFactory;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
@@ -19,8 +21,12 @@ public class EditorUI extends ALayout {
     private FlatTextButton removeEntityButton;
     private FlatTextButton transformButton;
     private FlatTextButton addEntityButton;
+    private FlatTextButton saveButton;
+    private FlatTextButton loadButton;
     private FlatTextButton goBackButton;
     private FlatIconButton showMoreButton;
+    private Table saveLoadTable;
+    private Cell<Table> saveLoadCell;
     private Label modeLabel;
 
     @Getter
@@ -33,6 +39,8 @@ public class EditorUI extends ALayout {
         Table top = constructTopSegment();
 
         transformer = new ObjectTransformer();
+
+        saveLoadTable = constructSaveLoadTable();
 
         this.top();
         this.add(top).growX();
@@ -57,12 +65,34 @@ public class EditorUI extends ALayout {
         goBackButton.setColor(Colors.CORAL);
 
         showMoreButton = new FlatIconButton("ui/ui-more-button", 15);
+        showMoreButton.setOnClick(new Runnable() {
+            @Override
+            public void run() {
+                saveLoadCell.setActor(saveLoadTable);
+                saveLoadTable.getColor().a = 0;
+                saveLoadTable.addAction(Actions.fadeIn(0.3f));
+            }
+        });
 
 
         table.left();
         table.add(showMoreButton).size(85);
+        saveLoadCell = table.add().spaceLeft(20);
         table.add().growX();
         table.add(goBackButton).width(225).height(120);
+        return table;
+    }
+
+    private Table constructSaveLoadTable () {
+        final Table table = new Table();
+        table.defaults().width(180).height(90);
+        saveButton = new FlatTextButton(FontSize.SIZE_34, "SAVE");
+        saveButton.setColor(Colors.CORAL);
+        loadButton = new FlatTextButton(FontSize.SIZE_34, "LOAD");
+        loadButton.setColor(Colors.CORAL);
+
+        table.add(saveButton);
+        table.add(loadButton).spaceLeft(20);
         return table;
     }
 

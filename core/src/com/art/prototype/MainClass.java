@@ -29,6 +29,7 @@ public class MainClass extends ApplicationAdapter {
 	private Platform ground;
 	private GameUI gameUI;
 	private SpriteBatch spriteBatch;
+	private boolean loadFinished = false;
 
 	
 	@Override

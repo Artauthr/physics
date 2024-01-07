@@ -5,6 +5,7 @@ import com.art.prototype.api.API;
 import com.art.prototype.editor.Editor;
 import com.art.prototype.editor.LevelData;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
@@ -19,6 +20,23 @@ public class MainInput implements InputProcessor {
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.B) {
             API.get(Editor.class).saveToFile();
+            return true;
+        }
+
+        if (keycode == Input.Keys.F) {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            return true;
+        }
+
+        if (keycode == Input.Keys.V) {
+            World world = API.get(World.class);
+            world.setGravEnabled(!world.isGravEnabled());
+            System.out.println("world.isGravEnabled() = " + world.isGravEnabled());
+            return true;
+        }
+
+        if (keycode == Input.Keys.NUM_4) {
+            Gdx.graphics.setWindowedMode(1280, 720);
             return true;
         }
 

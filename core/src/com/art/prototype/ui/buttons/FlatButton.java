@@ -108,8 +108,8 @@ public abstract class FlatButton extends Table {
                 if (pointer == -1) { // -1 indicates the mouse moved over the actor without a button pressed
                     FlatButton flatButton = FlatButton.this;
                     flatButton.setBackground(hoverDrawable);
+                    isHovering = true;
                     if (flatButton.onHover != null) {
-                        isHovering = true;
                         flatButton.onHover.run();
                         return;
                     }
@@ -122,8 +122,8 @@ public abstract class FlatButton extends Table {
                 if (pointer == -1) { // -1 indicates the mouse moved away from the actor without a button pressed
                     FlatButton flatButton = FlatButton.this;
                     flatButton.setBackground(normalDrawable);
+                    isHovering = false;
                     if (flatButton.onHoverExit != null) {
-                        isHovering = false;
                         flatButton.onHoverExit.run();
                     }
                 }

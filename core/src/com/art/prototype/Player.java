@@ -1,5 +1,6 @@
 package com.art.prototype;
 
+import com.art.prototype.api.API;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -16,21 +17,14 @@ public class Player extends DynamicBody {
     @Setter
     private float jumpAmount = 90f;
     private final float HORIZONTAL_SPEED = 35f;
-    private final float MIN_JUMP_SPEED = 40f;
-    private Array<Integer> keycodes;
     private Vector2 prevPos = new Vector2();
-
-    private final float MAX_JUMP_VEL = 80f;
-
     private boolean spacePressed = false;
-    private boolean spaceBeingPressed;
     private float spacePressDuration = 0f;
 
 
     public Player () {
         pos.set(50, 25);
         size.set(width, height);
-        keycodes = new Array<>();
     }
 
     public void jump () {
@@ -53,6 +47,17 @@ public class Player extends DynamicBody {
         } else {
             velocity.x = 0;
         }
+
+        if (!API.get(World.class).isGravEnabled()) {
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                velocity.y = -HORIZONTAL_SPEED;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                velocity.y = HORIZONTAL_SPEED;
+            } else {
+                velocity.y = 0;
+            }
+        }
+
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             jump();

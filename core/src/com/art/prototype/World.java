@@ -1,11 +1,14 @@
 package com.art.prototype;
 
+import com.art.prototype.collision.CollisionChecker;
+import com.art.prototype.collision.Ray2D;
 import com.art.prototype.editor.LevelData;
 import com.art.prototype.editor.PlatformData;
+import com.art.prototype.render.Graphics2D;
 import com.art.prototype.ui.Colors;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -27,7 +30,6 @@ public class World {
     @Getter
     @Setter
     private Player player;
-
     //PARAMS
     private final float GRAVITY = -4.8f;
 
@@ -40,6 +42,13 @@ public class World {
     @Setter
     private Rectangle lastDebugRect;
 
+    @Getter
+    @Setter
+    private boolean gravEnabled = false;
+    private Vector2 directionTemp = new Vector2();
+    private Vector2 originTemp = new Vector2();
+    private float accumulator = 0;
+
 
     public World () {
         forces = new Vector2(0, GRAVITY);
@@ -51,15 +60,17 @@ public class World {
         tmp2 = new Rectangle();
     }
 
-    private float accumulator = 0;
+
 
     public void doPhysicsStep(float deltaTime) {
         // fixed time step
-        float frameTime = Math.min(deltaTime, 0.15f);
-        accumulator += frameTime;
+//        float frameTime = Math.min(deltaTime, 0.15f);
+        accumulator += deltaTime;
         while (accumulator >= TIME_STEP) {
-            applyForceToAll();
-            collisionCheckSingle();
+            if (gravEnabled) {
+                applyForceToAll();
+            }
+            collisionCheckSingle(deltaTime);
             accumulator -= TIME_STEP;
         }
     }
@@ -70,27 +81,26 @@ public class World {
         }
     }
 
-    private void collisionCheck () {
-        for (DynamicBody dynamicBody : dynamicBodies) {
-            applyForce(dynamicBody);
-            for (StaticBody staticBody : staticBodies) {
-                Utils.setupRectangleFor(tmp1, dynamicBody);
-                Utils.setupRectangleFor(tmp2, staticBody);
-                if (Intersector.overlaps(tmp1, tmp2)) {
-                    dynamicBody.velocity.setZero();
-                    dynamicBody.pos.y = staticBody.pos.y + staticBody.size.y;
 
-                }
-            }
-        }
-    }
-
-    private void collisionCheckSingle () {
+    private void collisionCheckSingle (float deltaTime) {
+        if (player.getVelocity().isZero()) return;
         for (StaticBody staticBody : staticBodies) {
             Utils.setupRectangleFor(tmp2, player);
-            Utils.setupRectangleFor(tmp1, staticBody);
-            if (Intersector.overlaps(tmp1, tmp2)) {
-                resolveStaticCollision(player, staticBody);
+            Utils.setupRectangleFor(tmp1, staticBody);// <- make a class that extends rectangle and pack this into it (have something like ColliderRect.setupFor(staticBody);
+
+            originTemp.set(player.getPos());
+            originTemp.x += player.getSize().x * 0.5f;
+            originTemp.y += player.getSize().y * 0.5f;
+
+            directionTemp.set(player.getVelocity());
+            directionTemp.scl(deltaTime);
+
+            CollisionChecker.RayVsRectResult result = CollisionChecker.rayIntersectsRect(originTemp, directionTemp, tmp1);
+            if (result != null) {
+                if (result.getNearHitTime() < 1) {
+                    System.err.println("FUCKING COLLISION DETECTED");
+                    player.getVelocity().setZero();
+                }
             }
         }
     }
@@ -106,73 +116,6 @@ public class World {
             player.reset();
         }
     }
-
-
-    private void resolveStaticCollision(DynamicBody dynamicBody, StaticBody staticBody) {
-        float dynamicCenterX = dynamicBody.pos.x + dynamicBody.size.x / 2;
-        float staticCenterX = staticBody.pos.x + staticBody.size.x / 2;
-        float dynamicCenterY = dynamicBody.pos.y + dynamicBody.size.y / 2;
-        float staticCenterY = staticBody.pos.y + staticBody.size.y / 2;
-
-        float overlapX = Math.min(dynamicBody.pos.x + dynamicBody.size.x, staticBody.pos.x + staticBody.size.x) - Math.max(dynamicBody.pos.x, staticBody.pos.x);
-        float overlapY = Math.min(dynamicBody.pos.y + dynamicBody.size.y, staticBody.pos.y + staticBody.size.y) - Math.max(dynamicBody.pos.y, staticBody.pos.y);
-
-        if (overlapX < overlapY) {
-            // Horizontal collision
-            if (dynamicCenterX < staticCenterX) {
-                // Collision from the left
-                System.out.println("LEFT");
-                dynamicBody.pos.x = staticBody.pos.x - dynamicBody.size.x;
-            } else {
-                // Collision from the right
-                System.out.println("RIGHT");
-                dynamicBody.pos.x = staticBody.pos.x + staticBody.size.x;
-            }
-            dynamicBody.getVelocity().x = 0;
-        } else {
-            // Vertical collision
-            if (dynamicCenterY < staticCenterY) {
-                // Collision from below
-                System.out.println("DOWN");
-                dynamicBody.pos.y = staticBody.pos.y - dynamicBody.size.y;
-            } else {
-                // Collision from above
-                System.out.println("ABOVE");
-                dynamicBody.pos.y = staticBody.pos.y + staticBody.size.y;
-            }
-            dynamicBody.getVelocity().y = 0;
-        }
-    }
-
-
-
-
-//        boolean yLower = dynamicBody.pos.y < staticBody.pos.y;
-//        boolean xLower = dynamicBody.pos.x < staticBody.pos.x;
-//
-//        final float xDist = Math.abs(dynamicBody.pos.x - staticBody.pos.x);
-//        final float yDist = Math.abs(dynamicBody.pos.y - staticBody.pos.y);
-//
-//        final float fartherDistance = Math.max(xDist, yDist);
-//
-//        if (fartherDistance == xDist) {
-//            if (xLower) {
-//                System.out.println("LEFT SIDE HIT");
-//                return;
-//            } else {
-//                System.out.println("RIGHT SIDE HIT");
-//                return;
-//            }
-//        }
-//        if (fartherDistance == yDist) {
-//            if (yLower) {
-//                System.out.println("BOTTOM SIDE HIT");
-//            } else {
-//                System.out.println("UPPER SIDE HIT");
-//            }
-//        }
-
-//    }
 
     public void spawnPlatformAt (float x, float y) {
         Platform platform = new Platform();
