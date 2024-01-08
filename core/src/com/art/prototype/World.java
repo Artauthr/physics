@@ -49,6 +49,16 @@ public class World {
     private Vector2 originTemp = new Vector2();
     private float accumulator = 0;
 
+    Ray2D ray = new Ray2D();
+
+    Vector2 projector = new Vector2();
+
+    private CollisionChecker.RayVsRectResult lastResult;
+
+    private Rectangle expandedLast;
+    private boolean expandedSet = false;
+
+
 
     public World () {
         forces = new Vector2(0, GRAVITY);
@@ -58,6 +68,8 @@ public class World {
 
         tmp1 = new Rectangle();
         tmp2 = new Rectangle();
+
+        ray.getOrigin().set(40, 20);
     }
 
 
@@ -83,10 +95,17 @@ public class World {
 
 
     private void collisionCheckSingle (float deltaTime) {
-        if (player.getVelocity().isZero()) return;
+//        if (player.getVelocity().isZero()) return;
         for (StaticBody staticBody : staticBodies) {
             Utils.setupRectangleFor(tmp2, player);
-            Utils.setupRectangleFor(tmp1, staticBody);// <- make a class that extends rectangle and pack this into it (have something like ColliderRect.setupFor(staticBody);
+//            Utils.setupRectangleFor(tmp1, staticBody);// <- make a class that extends rectangle and pack this into it (have something like ColliderRect.setupFor(staticBody);
+            tmp1.setPosition(staticBody.getPos().x - player.getSize().x * 0.5f, staticBody.getPos().y - player.getSize().y * 0.5f);
+            tmp1.setSize(staticBody.getSize().x + player.getSize().x, staticBody.getSize().y + player.getSize().y);
+
+            if (!expandedSet) {
+                this.expandedLast = new Rectangle(tmp1);
+            }
+
 
             originTemp.set(player.getPos());
             originTemp.x += player.getSize().x * 0.5f;
@@ -94,16 +113,37 @@ public class World {
 
             directionTemp.set(player.getVelocity());
             directionTemp.scl(deltaTime);
+            projector.set(Gdx.input.getX(), Gdx.input.getY());
+            Graphics2D.get().getGameViewport().unproject(projector);
+
 
             CollisionChecker.RayVsRectResult result = CollisionChecker.rayIntersectsRect(originTemp, directionTemp, tmp1);
             if (result != null) {
-                if (result.getNearHitTime() < 1) {
-                    System.err.println("FUCKING COLLISION DETECTED");
-                    player.getVelocity().setZero();
+                if (result.getNearHitTime() < 1 && result.getNearHitTime() >= 0) {
+                    lastResult = result;
+                    resolve();
                 }
             }
         }
     }
+
+    private Vector2 resolver = new Vector2();
+
+    private void resolve () {
+        resolver.set(lastResult.getContactNormal());
+        resolver.scl(Math.abs(player.getVelocity().x), Math.abs(player.getVelocity().y));
+        resolver.scl(1 - lastResult.getNearHitTime());
+        player.getVelocity().add(resolver);
+
+
+//        player.getVelocity().setZero();
+
+        System.out.println("player.getVelocity() = " + player.getVelocity());
+    }
+
+    /*
+    r_dynamic->vel += contact_normal * olc::vf2d(std::abs(r_dynamic->vel.x), std::abs(r_dynamic->vel.y)) * (1 - contact_time);
+     */
 
     public void loadFromLevelData (LevelData levelData, boolean resetPlayer) {
         this.staticBodies.clear();
@@ -141,7 +181,29 @@ public class World {
             shapeRenderer.setColor(Color.GOLD);
             shapeRenderer.rect(lastDebugRect.x, lastDebugRect.y, lastDebugRect.width, lastDebugRect.height);
         }
+
+        projector.set(Gdx.input.getX(), Gdx.input.getY());
+        Graphics2D.get().getGameViewport().unproject(projector);
+
+        shapeRenderer.line(ray.getOrigin(),  projector);
+
+        if (lastResult != null) {
+            final Vector2 cp = lastResult.getContactPoint();
+            final Vector2 cn = lastResult.getContactNormal();
+            shapeRenderer.circle(cp.x, cp.y, 0.3f, 20);
+
+            shapeRenderer.line(cp, cpcn.set(cp).add(cn));
+        }
+
+        if (expandedLast!= null) {
+            shapeRenderer.rect(expandedLast.x, expandedLast.y, expandedLast.getWidth(), expandedLast.getHeight());
+        }
     }
+
+
+    Vector2 cpcn = new Vector2();
+
+
 
     private void applyForce (DynamicBody object) {
         final Vector2 velocity = object.getVelocity();
