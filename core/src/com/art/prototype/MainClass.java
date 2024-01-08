@@ -81,8 +81,9 @@ public class MainClass extends ApplicationAdapter {
 
 		extendViewport.apply();
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		player.update(deltaTime);
+		player.handleInput(deltaTime);
 		world.doPhysicsStep(deltaTime);
+		player.update(deltaTime);
 
 		shapeRenderer.begin();
 		shapeRenderer.setColor(Color.WHITE);

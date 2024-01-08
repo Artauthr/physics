@@ -35,18 +35,18 @@ public class Player extends DynamicBody {
     }
 
     public void update (float deltaTime) {
-        handleInput(deltaTime);
+//        handleInput(deltaTime);
         prevPos.set(pos);
         pos.add(velocity.x * deltaTime, velocity.y * deltaTime);
     }
 
-    private void handleInput(float deltaTime) {
+    public void handleInput(float deltaTime) {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = -HORIZONTAL_SPEED;
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x = HORIZONTAL_SPEED;
         } else {
-//            velocity.x = 0;
+            velocity.x = 0;
         }
 
         if (!API.get(World.class).isGravEnabled()) {
@@ -55,20 +55,21 @@ public class Player extends DynamicBody {
             } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
                 velocity.y = HORIZONTAL_SPEED;
             } else {
-//                velocity.y = 0;
+                velocity.y = 0;
             }
         }
 
-//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-//            Vector2 mouse = new Vector2();
-//            mouse.set(Gdx.input.getX(), Gdx.input.getY());
-//            Graphics2D.get().getGameViewport().unproject(mouse);
-//            mouse.sub(pos).nor().scl(2);
-////            mouse.nor();
-////            this.velocity.setZero();
-////            mouse.scl(20);
-//            this.velocity.add(mouse);
-//        }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            Vector2 mouse = new Vector2();
+            mouse.set(Gdx.input.getX(), Gdx.input.getY());
+            Graphics2D.get().getGameViewport().unproject(mouse);
+            mouse.sub(pos).nor().scl(1.25f);
+            this.velocity.add(mouse);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            velocity.setZero();
+        }
 
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {

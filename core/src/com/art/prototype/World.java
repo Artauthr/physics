@@ -77,14 +77,19 @@ public class World {
     public void doPhysicsStep(float deltaTime) {
         // fixed time step
 //        float frameTime = Math.min(deltaTime, 0.15f);
-        accumulator += deltaTime;
-        while (accumulator >= TIME_STEP) {
-            if (gravEnabled) {
-                applyForceToAll();
-            }
-            collisionCheckSingle(deltaTime);
-            accumulator -= TIME_STEP;
+//        accumulator += deltaTime;
+//        while (accumulator >= TIME_STEP) {
+//            if (gravEnabled) {
+//                applyForceToAll();
+//            }
+//            collisionCheckSingle(deltaTime);
+//            accumulator -= TIME_STEP;
+//        }
+
+        if (gravEnabled) {
+            applyForceToAll();
         }
+        collisionCheckSingle(deltaTime);
     }
 
     private void applyForceToAll () {
@@ -95,7 +100,7 @@ public class World {
 
 
     private void collisionCheckSingle (float deltaTime) {
-//        if (player.getVelocity().isZero()) return;
+        if (player.getVelocity().isZero()) return;
         for (StaticBody staticBody : staticBodies) {
             Utils.setupRectangleFor(tmp2, player);
 //            Utils.setupRectangleFor(tmp1, staticBody);// <- make a class that extends rectangle and pack this into it (have something like ColliderRect.setupFor(staticBody);
@@ -113,13 +118,15 @@ public class World {
 
             directionTemp.set(player.getVelocity());
             directionTemp.scl(deltaTime);
-            projector.set(Gdx.input.getX(), Gdx.input.getY());
-            Graphics2D.get().getGameViewport().unproject(projector);
+//            projector.set(Gdx.input.getX(), Gdx.input.getY());
+//            Graphics2D.get().getGameViewport().unproject(projector);
 
 
             CollisionChecker.RayVsRectResult result = CollisionChecker.rayIntersectsRect(originTemp, directionTemp, tmp1);
             if (result != null) {
                 if (result.getNearHitTime() < 1 && result.getNearHitTime() >= 0) {
+                    System.out.println("result.getContactNormal() = " + result.getContactNormal());
+
                     lastResult = result;
                     resolve();
                 }
@@ -130,12 +137,16 @@ public class World {
     private Vector2 resolver = new Vector2();
 
     private void resolve () {
-        resolver.set(lastResult.getContactNormal());
-        resolver.scl(Math.abs(player.getVelocity().x), Math.abs(player.getVelocity().y));
-        resolver.scl(1 - lastResult.getNearHitTime());
-        player.getVelocity().add(resolver);
+//        resolver.set(lastResult.getContactNormal());
+//        resolver.scl((player.getVelocity().x), (player.getVelocity().y));
+//        resolver.scl(1 - lastResult.getNearHitTime());
+//        player.getVelocity().add(resolver);
 
-
+        if (lastResult.getContactNormal().x == 0) {
+            player.getVelocity().y = 0;
+        } else if (lastResult.getContactNormal().y == 0) {
+            player.getVelocity().x = 0;
+        }
 //        player.getVelocity().setZero();
 
         System.out.println("player.getVelocity() = " + player.getVelocity());
@@ -182,22 +193,22 @@ public class World {
             shapeRenderer.rect(lastDebugRect.x, lastDebugRect.y, lastDebugRect.width, lastDebugRect.height);
         }
 
-        projector.set(Gdx.input.getX(), Gdx.input.getY());
-        Graphics2D.get().getGameViewport().unproject(projector);
-
-        shapeRenderer.line(ray.getOrigin(),  projector);
-
-        if (lastResult != null) {
-            final Vector2 cp = lastResult.getContactPoint();
-            final Vector2 cn = lastResult.getContactNormal();
-            shapeRenderer.circle(cp.x, cp.y, 0.3f, 20);
-
-            shapeRenderer.line(cp, cpcn.set(cp).add(cn));
-        }
-
-        if (expandedLast!= null) {
-            shapeRenderer.rect(expandedLast.x, expandedLast.y, expandedLast.getWidth(), expandedLast.getHeight());
-        }
+//        projector.set(Gdx.input.getX(), Gdx.input.getY());
+//        Graphics2D.get().getGameViewport().unproject(projector);
+//
+//        shapeRenderer.line(ray.getOrigin(),  projector);
+//
+//        if (lastResult != null) {
+//            final Vector2 cp = lastResult.getContactPoint();
+//            final Vector2 cn = lastResult.getContactNormal();
+//            shapeRenderer.circle(cp.x, cp.y, 0.3f, 20);
+//
+//            shapeRenderer.line(cp, cpcn.set(cp).add(cn));
+//        }
+//
+//        if (expandedLast!= null) {
+//            shapeRenderer.rect(expandedLast.x, expandedLast.y, expandedLast.getWidth(), expandedLast.getHeight());
+//        }
     }
 
 
