@@ -1,6 +1,7 @@
 package com.art.prototype;
 
 import com.art.prototype.api.API;
+import com.art.prototype.render.Graphics2D;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -34,12 +35,12 @@ public class Player extends DynamicBody {
     }
 
     public void update (float deltaTime) {
-        handleInput(deltaTime);
+//        handleInput(deltaTime);
         prevPos.set(pos);
         pos.add(velocity.x * deltaTime, velocity.y * deltaTime);
     }
 
-    private void handleInput(float deltaTime) {
+    public void handleInput(float deltaTime) {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = -HORIZONTAL_SPEED;
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -56,6 +57,18 @@ public class Player extends DynamicBody {
             } else {
                 velocity.y = 0;
             }
+        }
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            Vector2 mouse = new Vector2();
+            mouse.set(Gdx.input.getX(), Gdx.input.getY());
+            Graphics2D.get().getGameViewport().unproject(mouse);
+            mouse.sub(pos).nor().scl(1.25f);
+            this.velocity.add(mouse);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            velocity.setZero();
         }
 
 

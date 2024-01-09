@@ -13,6 +13,8 @@ public class CollisionChecker {
 
     }
 
+    private static Vector2 tmp = new Vector2();
+
     private static RayVsRectResult tempResult = new RayVsRectResult();
 
     public static RayVsRectResult rayIntersectsRect(Vector2 rayOrigin, Vector2 rayDirection, Rectangle target) {
@@ -49,7 +51,10 @@ public class CollisionChecker {
         if (farHitT < 0) return null;
 
         tempResult.contactPoint = rayOrigin.cpy();
-        tempResult.contactPoint.add(nearX, nearY).scl(rayDirection);
+
+        tmp.set(rayDirection);
+        tmp.scl(tempResult.nearHitTime);
+        tempResult.contactPoint.add(tmp);
 
         // Set contact normal
         if (nearX > nearY) {

@@ -49,6 +49,16 @@ public class World {
     private Vector2 originTemp = new Vector2();
     private float accumulator = 0;
 
+    Ray2D ray = new Ray2D();
+
+    Vector2 projector = new Vector2();
+
+    private CollisionChecker.RayVsRectResult lastResult;
+
+    private Rectangle expandedLast;
+    private boolean expandedSet = false;
+
+
 
     public World () {
         forces = new Vector2(0, GRAVITY);
@@ -58,6 +68,8 @@ public class World {
 
         tmp1 = new Rectangle();
         tmp2 = new Rectangle();
+
+        ray.getOrigin().set(40, 20);
     }
 
 
@@ -65,14 +77,19 @@ public class World {
     public void doPhysicsStep(float deltaTime) {
         // fixed time step
 //        float frameTime = Math.min(deltaTime, 0.15f);
-        accumulator += deltaTime;
-        while (accumulator >= TIME_STEP) {
-            if (gravEnabled) {
-                applyForceToAll();
-            }
-            collisionCheckSingle(deltaTime);
-            accumulator -= TIME_STEP;
+//        accumulator += deltaTime;
+//        while (accumulator >= TIME_STEP) {
+//            if (gravEnabled) {
+//                applyForceToAll();
+//            }
+//            collisionCheckSingle(deltaTime);
+//            accumulator -= TIME_STEP;
+//        }
+
+        if (gravEnabled) {
+            applyForceToAll();
         }
+        collisionCheckSingle(deltaTime);
     }
 
     private void applyForceToAll () {
@@ -86,7 +103,14 @@ public class World {
         if (player.getVelocity().isZero()) return;
         for (StaticBody staticBody : staticBodies) {
             Utils.setupRectangleFor(tmp2, player);
-            Utils.setupRectangleFor(tmp1, staticBody);// <- make a class that extends rectangle and pack this into it (have something like ColliderRect.setupFor(staticBody);
+//            Utils.setupRectangleFor(tmp1, staticBody);// <- make a class that extends rectangle and pack this into it (have something like ColliderRect.setupFor(staticBody);
+            tmp1.setPosition(staticBody.getPos().x - player.getSize().x * 0.5f, staticBody.getPos().y - player.getSize().y * 0.5f);
+            tmp1.setSize(staticBody.getSize().x + player.getSize().x, staticBody.getSize().y + player.getSize().y);
+
+            if (!expandedSet) {
+                this.expandedLast = new Rectangle(tmp1);
+            }
+
 
             originTemp.set(player.getPos());
             originTemp.x += player.getSize().x * 0.5f;
@@ -94,16 +118,43 @@ public class World {
 
             directionTemp.set(player.getVelocity());
             directionTemp.scl(deltaTime);
+//            projector.set(Gdx.input.getX(), Gdx.input.getY());
+//            Graphics2D.get().getGameViewport().unproject(projector);
+
 
             CollisionChecker.RayVsRectResult result = CollisionChecker.rayIntersectsRect(originTemp, directionTemp, tmp1);
             if (result != null) {
-                if (result.getNearHitTime() < 1) {
-                    System.err.println("FUCKING COLLISION DETECTED");
-                    player.getVelocity().setZero();
+                if (result.getNearHitTime() < 1 && result.getNearHitTime() >= 0) {
+                    System.out.println("result.getContactNormal() = " + result.getContactNormal());
+
+                    lastResult = result;
+                    resolve();
                 }
             }
         }
     }
+
+    private Vector2 resolver = new Vector2();
+
+    private void resolve () {
+//        resolver.set(lastResult.getContactNormal());
+//        resolver.scl((player.getVelocity().x), (player.getVelocity().y));
+//        resolver.scl(1 - lastResult.getNearHitTime());
+//        player.getVelocity().add(resolver);
+
+        if (lastResult.getContactNormal().x == 0) {
+            player.getVelocity().y = 0;
+        } else if (lastResult.getContactNormal().y == 0) {
+            player.getVelocity().x = 0;
+        }
+//        player.getVelocity().setZero();
+
+        System.out.println("player.getVelocity() = " + player.getVelocity());
+    }
+
+    /*
+    r_dynamic->vel += contact_normal * olc::vf2d(std::abs(r_dynamic->vel.x), std::abs(r_dynamic->vel.y)) * (1 - contact_time);
+     */
 
     public void loadFromLevelData (LevelData levelData, boolean resetPlayer) {
         this.staticBodies.clear();
@@ -141,7 +192,29 @@ public class World {
             shapeRenderer.setColor(Color.GOLD);
             shapeRenderer.rect(lastDebugRect.x, lastDebugRect.y, lastDebugRect.width, lastDebugRect.height);
         }
+
+//        projector.set(Gdx.input.getX(), Gdx.input.getY());
+//        Graphics2D.get().getGameViewport().unproject(projector);
+//
+//        shapeRenderer.line(ray.getOrigin(),  projector);
+//
+//        if (lastResult != null) {
+//            final Vector2 cp = lastResult.getContactPoint();
+//            final Vector2 cn = lastResult.getContactNormal();
+//            shapeRenderer.circle(cp.x, cp.y, 0.3f, 20);
+//
+//            shapeRenderer.line(cp, cpcn.set(cp).add(cn));
+//        }
+//
+//        if (expandedLast!= null) {
+//            shapeRenderer.rect(expandedLast.x, expandedLast.y, expandedLast.getWidth(), expandedLast.getHeight());
+//        }
     }
+
+
+    Vector2 cpcn = new Vector2();
+
+
 
     private void applyForce (DynamicBody object) {
         final Vector2 velocity = object.getVelocity();
